@@ -34,6 +34,10 @@ Classes:
 - Did your design change during implementation?
 - If yes, describe at least one change and why you made it.
 
+I noticed that anything can be passed into priority, so I changed it from a string
+to a Enum with values High, Medium, and Low to prevent random inputs. Minor change, but
+important. 
+
 ---
 
 ## 2. Scheduling Logic and Tradeoffs
