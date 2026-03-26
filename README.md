@@ -53,3 +53,23 @@ Beyond the core greedy planner, four additional features improve how tasks are m
 **Recurring tasks** — `Task` has a `recurrence` field (`"none"`, `"daily"`, `"weekly"`) and a `due_date` field. When `mark_complete()` is called on a recurring task, it returns a new `Task` instance with `due_date` advanced by 1 or 7 days via `timedelta`, leaving the original marked complete.
 
 **Conflict detection** — `Scheduler.detect_conflicts()` groups tasks by `due_date` and checks every pair within the same date. If any two tasks combined would exceed the available time budget, a warning string is returned — no exceptions raised.
+
+## Testing PawPal+
+
+**Confidence: ★★★★☆ (4/5)**
+
+Run the full test suite:
+
+```bash
+pytest tests/test_pawpal.py -v
+```
+
+| Test | Description |
+|---|---|
+| `test_mark_complete_sets_is_complete` | Calling `mark_complete()` flips `is_complete` from `False` to `True` |
+| `test_add_task_increases_pet_task_count` | `add_task()` appends to the pet's task list and increments its length |
+| `test_sort_tasks_by_duration_shortest_first` | `sort_tasks_by_duration()` returns tasks in ascending order of duration |
+| `test_mark_complete_daily_task_creates_new_task_due_tomorrow` | Completing a daily recurring task returns a fresh task with `due_date` advanced by one day |
+| `test_detect_conflicts_flags_tasks_exceeding_budget` | Two same-date tasks whose combined duration exceeds the budget produce a conflict warning |
+| `test_pet_with_no_tasks_returns_empty_plan` | `generate_plan()` on a pet with no tasks returns an empty list |
+| `test_filter_tasks_returns_only_incomplete` | `filter_tasks(completed=False)` excludes already-completed tasks |
