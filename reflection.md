@@ -7,6 +7,28 @@
 - Briefly describe your initial UML design.
 - What classes did you include, and what responsibilities did you assign to each?
 
+Three core actions:
+	1) The user must be able to enter the pets name and other info, and care
+	   time availability. 
+	2) The user must be able to create tasks with a name, duration (minutes),
+  	   and priority level. They can edit and delete these tasks.
+	3) Our app must return a task list and constraints, schedules tasks by time
+	   and priority. It should also provide explanation for such choices.
+ 
+Classes:
+1) Owner - attributes: name, available_minutes
+	 - methods: add_pet(), get_pets()
+
+2) Pet - attributes: name, species, age
+       - methods: add_task(), get_tasks()
+
+3) Task - attributes: name, duration, priority, completed
+	- methods: mark_complete()
+
+4) Schedule - attributes: pet, available_minutes
+	    - methods: make_plan(), explain_plan()
+
+
 **b. Design changes**
 
 - Did your design change during implementation?
