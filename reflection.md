@@ -52,6 +52,9 @@ important.
 - Describe one tradeoff your scheduler makes.
 - Why is that tradeoff reasonable for this scenario?
 
+Since tasks have no start times, conflict detection flags pairs that exceed the daily budget 
+together, not true time overlaps. For a simple daily planner, that tradeoff is good enough.
+
 ---
 
 ## 3. AI Collaboration

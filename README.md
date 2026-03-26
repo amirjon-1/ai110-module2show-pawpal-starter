@@ -41,3 +41,15 @@ pip install -r requirements.txt
 5. Add tests to verify key behaviors.
 6. Connect your logic to the Streamlit UI in `app.py`.
 7. Refine UML so it matches what you actually built.
+
+## Smarter Scheduling
+
+Beyond the core greedy planner, four additional features improve how tasks are managed:
+
+**Sorting by duration** — `Scheduler.sort_tasks_by_duration()` returns tasks ordered shortest to longest using `sorted()` with a lambda. Useful for fitting the most tasks into a tight time budget.
+
+**Filtering by completion status** — `Scheduler.filter_tasks(completed=True/False)` returns only tasks matching the given status. Makes it easy to show a pet's pending tasks or review what has already been done today.
+
+**Recurring tasks** — `Task` has a `recurrence` field (`"none"`, `"daily"`, `"weekly"`) and a `due_date` field. When `mark_complete()` is called on a recurring task, it returns a new `Task` instance with `due_date` advanced by 1 or 7 days via `timedelta`, leaving the original marked complete.
+
+**Conflict detection** — `Scheduler.detect_conflicts()` groups tasks by `due_date` and checks every pair within the same date. If any two tasks combined would exceed the available time budget, a warning string is returned — no exceptions raised.
