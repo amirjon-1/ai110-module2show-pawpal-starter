@@ -42,6 +42,28 @@ pip install -r requirements.txt
 6. Connect your logic to the Streamlit UI in `app.py`.
 7. Refine UML so it matches what you actually built.
 
+## Features
+
+### Greedy priority planner
+`Scheduler.generate_plan()` sorts tasks by priority (HIGH → MEDIUM → LOW) then packs them greedily into the owner's daily time budget. Higher-priority tasks are always considered first; a task is included only if it fits within the remaining minutes.
+
+### Sort by duration
+`Scheduler.sort_tasks_by_duration()` returns all of a pet's tasks ordered shortest to longest using Python's built-in `sorted()` with a duration key. Useful for maximising the number of tasks that fit in a tight window.
+
+### Filter by completion status
+`Scheduler.filter_tasks(completed: bool)` returns only tasks whose `is_complete` flag matches the argument. Passing `False` surfaces the pending task list; passing `True` shows what has already been done.
+
+### Recurring tasks
+`Task` carries a `recurrence` field (`"none"` / `"daily"` / `"weekly"`) and an optional `due_date`. Calling `mark_complete()` on a recurring task sets `is_complete = True` on the original and returns a **new** `Task` instance with `due_date` advanced by 1 or 7 days via `datetime.timedelta`. Non-recurring tasks return `None`.
+
+### Conflict detection
+`Scheduler.detect_conflicts()` groups tasks by `due_date`, then checks every pair on the same date with `itertools.combinations`. If any pair's combined duration exceeds the owner's daily budget, a human-readable warning string is appended to the result list — no exceptions raised.
+
+### Plan explanation
+`Scheduler.explain_plan()` returns a formatted string listing which tasks were included in the plan and which were skipped due to insufficient time, along with total minutes used versus the budget.
+
+---
+
 ## Smarter Scheduling
 
 Beyond the core greedy planner, four additional features improve how tasks are managed:
@@ -54,9 +76,7 @@ Beyond the core greedy planner, four additional features improve how tasks are m
 
 **Conflict detection** — `Scheduler.detect_conflicts()` groups tasks by `due_date` and checks every pair within the same date. If any two tasks combined would exceed the available time budget, a warning string is returned — no exceptions raised.
 
-## Testing PawPal+
-
-**Confidence: ★★★★☆ (4/5)**
+## Testing
 
 Run the full test suite:
 
@@ -64,9 +84,9 @@ Run the full test suite:
 pytest tests/test_pawpal.py -v
 ```
 
-| Test | Description |
+| Test | What it covers |
 |---|---|
-| `test_mark_complete_sets_is_complete` | Calling `mark_complete()` flips `is_complete` from `False` to `True` |
+| `test_mark_complete_sets_is_complete` | `mark_complete()` flips `is_complete` from `False` to `True` |
 | `test_add_task_increases_pet_task_count` | `add_task()` appends to the pet's task list and increments its length |
 | `test_sort_tasks_by_duration_shortest_first` | `sort_tasks_by_duration()` returns tasks in ascending order of duration |
 | `test_mark_complete_daily_task_creates_new_task_due_tomorrow` | Completing a daily recurring task returns a fresh task with `due_date` advanced by one day |

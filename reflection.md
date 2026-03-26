@@ -47,6 +47,9 @@ important.
 - What constraints does your scheduler consider (for example: time, priority, preferences)?
 - How did you decide which constraints mattered most?
 
+The scheduler considers the daily time budget and task priority. Priority mattered most 
+because skipping medication is worse than skipping fetch training.
+
 **b. Tradeoffs**
 
 - Describe one tradeoff your scheduler makes.
@@ -64,10 +67,17 @@ together, not true time overlaps. For a simple daily planner, that tradeoff is g
 - How did you use AI tools during this project (for example: design brainstorming, debugging, refactoring)?
 - What kinds of prompts or questions were most helpful?
 
+I used a mix of Claude Code and Copilot for generating skeletons, implementing logic, and wiring the UI. 
+Specific prompts worked way better than vague ones.
+
+
 **b. Judgment and verification**
 
 - Describe one moment where you did not accept an AI suggestion as-is.
 - How did you evaluate or verify what the AI suggested?
+
+Claude suggested itertools.combinations for conflict detection. I didn't just copy it, I read through it and 
+made sure I understood the logic before keeping it.
 
 ---
 
@@ -78,10 +88,18 @@ together, not true time overlaps. For a simple daily planner, that tradeoff is g
 - What behaviors did you test?
 - Why were these tests important?
 
+I tested that mark_complete() sets is_complete to True, adding a task increases the pet's task count, 
+sorting returns tasks shortest first, and a daily task creates a new instance due tomorrow.
+
+
 **b. Confidence**
 
 - How confident are you that your scheduler works correctly?
 - What edge cases would you test next if you had more time?
+
+Pretty confident in the core logic. I'd add tests for a pet with no tasks, a budget of zero, 
+and tasks that all have the same priority.
+
 
 ---
 
@@ -91,10 +109,20 @@ together, not true time overlaps. For a simple daily planner, that tradeoff is g
 
 - What part of this project are you most satisfied with?
 
+The scheduling logic came out clean. The greedy priority sort with a readable explain_plan() 
+output is something I'm happy with.
+
 **b. What you would improve**
 
 - If you had another iteration, what would you improve or redesign?
 
+I'd add start times to tasks so conflict detection could check real overlaps instead of just budget totals.
+
 **c. Key takeaway**
 
 - What is one important thing you learned about designing systems or working with AI on this project?
+
+AI is great at generating boilerplate but you still have to understand what it gives you. 
+The design decisions were all mine, Claude just helped execute them faster.
+
+

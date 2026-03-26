@@ -113,6 +113,11 @@ if st.button("Generate schedule"):
         plan = scheduler.generate_plan()
         explanation = scheduler.explain_plan()
 
+        # Conflict detection
+        conflicts = scheduler.detect_conflicts()
+        for conflict in conflicts:
+            st.warning(conflict)
+
         st.markdown("#### Today's Schedule")
         st.code(explanation)
 
@@ -122,3 +127,55 @@ if st.button("Generate schedule"):
                 total / owner.available_minutes_per_day,
                 text=f"{total} of {owner.available_minutes_per_day} minutes used",
             )
+            st.success("Plan generated successfully.")
+
+st.divider()
+
+# --- Sorted tasks by duration ---
+
+st.subheader("Tasks Sorted by Duration")
+selected_sort_pet_name = st.selectbox("Select pet", [p.name for p in pets], key="sort_pet")
+sort_pet = next(p for p in pets if p.name == selected_sort_pet_name)
+scheduler_sort = Scheduler(pet=sort_pet, available_minutes=owner.available_minutes_per_day)
+sorted_tasks = scheduler_sort.sort_tasks_by_duration()
+
+if sorted_tasks:
+    st.table([
+        {
+            "Task": t.name,
+            "Duration (min)": t.duration_minutes,
+            "Priority": t.priority.value,
+            "Complete": t.is_complete,
+        }
+        for t in sorted_tasks
+    ])
+else:
+    st.info(f"{sort_pet.name} has no tasks yet.")
+
+st.divider()
+
+# --- Filter: incomplete tasks only ---
+
+st.subheader("Filter Tasks")
+selected_filter_pet_name = st.selectbox("Select pet", [p.name for p in pets], key="filter_pet")
+show_incomplete_only = st.toggle("Show incomplete tasks only", value=False)
+filter_pet = next(p for p in pets if p.name == selected_filter_pet_name)
+scheduler_filter = Scheduler(pet=filter_pet, available_minutes=owner.available_minutes_per_day)
+
+if show_incomplete_only:
+    filtered_tasks = scheduler_filter.filter_tasks(completed=False)
+else:
+    filtered_tasks = filter_pet.get_tasks()
+
+if filtered_tasks:
+    st.table([
+        {
+            "Task": t.name,
+            "Duration (min)": t.duration_minutes,
+            "Priority": t.priority.value,
+            "Complete": t.is_complete,
+        }
+        for t in filtered_tasks
+    ])
+else:
+    st.info("No tasks to display.")
